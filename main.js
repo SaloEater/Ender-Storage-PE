@@ -18,12 +18,12 @@ var enderStorage = {
         9: Native.Color.DARK_AQUA+Translation.translate("CYAN"),
         10: Native.Color.DARK_PURPLE+Translation.translate("PURPLE"),
         11: Native.Color.DARK_BLUE+Translation.translate("BLUE"),
-        125: Native.Color.DARK_RED+Translation.translate("BROWN"),
+        12: Native.Color.DARK_RED+Translation.translate("BROWN"),
         13: Native.Color.DARK_GREEN+Translation.translate("GREEN"),
         14: Native.Color.RED+Translation.translate("RED"),
         15: Native.Color.BLACK+Translation.translate("BLACK")
     },
-    
+	
     getStorage: function(color)
 	{
         if(!this.storages[color])this.makeNewStorage(color);
@@ -278,9 +278,7 @@ TileEntity.registerPrototype(BlockID.enderChest,
     defaultValues: 
 	{
         currentColor: "0:0:0",
-        type: 0,
-		enderChestObj: null,
-		enderChestGUI: null
+        type: 0
     },
 
     created: function() 
@@ -723,28 +721,39 @@ var enderChestObj =
 					{	
 						//Game.message("First2");
 //Game.message(c.data.currentColor);
-						c.data.currentColor = b.getSlot("dye1Editor").data+":"+b.getSlot("dye2Editor").data+":"+b.getSlot("dye3Editor").data;
-//Game.message(c.data.currentColor);
-						//Game.message("Before 1");
-						b.clearSlot("dye1Editor");
-						//Game.message("Before 2");
-						b.clearSlot("dye2Editor");
-						//Game.message("Before 3");
-						b.clearSlot("dye3Editor");
-						b.close();
-						var parent = b.getParent();
-//Game.message("Before container")
+						var newColor = b.getSlot("dye1Editor").data+":"+b.getSlot("dye2Editor").data+":"+b.getSlot("dye3Editor").data;
+						if(newColor!=c.data.currentColor){
+							c.data.currentColor = newColor;
+	//Game.message(c.data.currentColor);
+							//Game.message("Before 1");
+							b.clearSlot("dye1Editor");
+							//Game.message("Before 2");
+							b.clearSlot("dye2Editor");
+							//Game.message("Before 3");
+							b.clearSlot("dye3Editor");
+							b.close();
+							var parent = b.getParent();
+	//Game.message("Before container")
 
-						c.container = enderStorage.getStorage(c.data.currentColor);
-//Game.message("Before parent");
-						c.container.setParent(parent);
-//Game.message("Before setup");
-						c.setupColorBar();		
-//Game.message("Before anim");				
-						c.updateAnimation();
+							c.container = enderStorage.getStorage(c.data.currentColor);
+	//Game.message("Before parent");
+							c.container.setParent(parent);
+	//Game.message("Before setup");
+							c.setupColorBar();		
+	//Game.message("Before anim");				
+							c.updateAnimation();
+						} else {
+							Game.message("Данный цвет является активным, выберите другой цвет!");
+						}
 					} else 
 					{
 						//Всплывающая ошибка в каком слоте не тот предмет
+						var err1 = b.getSlot("dye1Editor").id!=35?"Поместите шерсть в первый слот":(b.getSlot("dye1Editor").count>1?"Поместите всего лишь одну шерсть в первый слот":"");
+						var err2 = b.getSlot("dye2Editor").id!=35?"Поместите шерсть во второй слот":(b.getSlot("dye2Editor").count>1?"Поместите всего лишь одну шерсть во второй слот":"");
+						var err3 = b.getSlot("dye3Editor").id!=35?"Поместите шерсть в третий слот":(b.getSlot("dye3Editor").count>1?"Поместите всего лишь одну шерсть в третий слот":"");
+						Game.message(err1);
+						Game.message(err2);
+						Game.message(err3);
 					}
 				}
 			}
